@@ -4,12 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stalt</title>
+    <style>
+      body { margin:0; background:#09090b; color:#fafafa; font-family:system-ui,sans-serif; font-size:13px; }
+      #root { min-height:100vh; }
+      #err-box { display:none; padding:32px 16px; text-align:center; }
+      #err-box.visible { display:block; }
+      #err-box h2 { color:#fca5a5; font-size:14px; margin-bottom:8px; }
+      #err-box pre { color:#a1a1aa; font-size:11px; white-space:pre-wrap; word-break:break-all; margin:8px 0; padding:10px; background:#1a1a1e; border-radius:6px; text-align:left; max-height:400px; overflow:auto; }
+      #err-box button { margin-top:12px; padding:6px 16px; background:#fafafa; color:#09090b; border:none; border-radius:4px; cursor:pointer; font-weight:600; }
+    </style>
     <script type="module" src="./sidepanel.js"></script>
     <link rel="stylesheet" href="./assets/sidepanel-DTtyzen8.css">
   </head>
   <body>
     <div id="root">
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#888;font-family:system-ui,sans-serif;font-size:14px;">Loading…</div>
+      <div id="loading-msg" style="display:flex;align-items:center;justify-content:center;height:100vh;color:#a1a1aa;">Loading…</div>
     </div>
+    <div id="err-box"><h2>Something went wrong</h2><pre id="err-msg"></pre><button onclick="location.reload()">Reload</button></div>
+    <script>
+      // Catch early errors before React mounts
+      var _showErr = function(msg) {
+        var loader = document.getElementById('loading-msg');
+        if (loader) loader.style.display = 'none';
+        var box = document.getElementById('err-box');
+        var el = document.getElementById('err-msg');
+        if (box && el) {
+          el.textContent = msg;
+          box.className = 'visible';
+        }
+      };
+      window.addEventListener('error', function(e) {
+        _showErr((e.message||'') + (e.filename ? ' — '+e.filename+':'+e.lineno+':'+e.colno : ''));
+      }, true);
+      window.addEventListener('unhandledrejection', function(e) {
+        _showErr('Unhandled: ' + (e.reason && e.reason.message || e.reason || ''));
+      });
+    </script>
   </body>
 </html>
