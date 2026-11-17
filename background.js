@@ -1,0 +1,1 @@
+chrome.sidePanel.setPanelBehavior({openPanelOnActionClick:!0}).catch(()=>{});var n,o;(o=(n=chrome.commands)==null?void 0:n.onCommand)==null||o.addListener(async a=>{if(a==="open-side-panel"){const[e]=await chrome.tabs.query({active:!0,lastFocusedWindow:!0});e!=null&&e.windowId&&await chrome.sidePanel.open({windowId:e.windowId})}});
